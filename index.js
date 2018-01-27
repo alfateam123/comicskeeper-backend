@@ -1,19 +1,25 @@
 var express = require("express");
 var sqlite3 = require("sqlite3").verbose();
+var path = require("path");
 
 // db setup
+// TODO(winter): remember to setup the real thing!
 var db = new sqlite3.Database(':memory:');
 db.serialize(function(){
-  db.run("CREATE TABLE books (title TEXT, series TEXT, volume_number INTEGER)");
+  db.run("CREATE TABLE books (title TEXT, series TEXT, volume_number INTEGER, image TEXT)");
 
-  var stmt = db.prepare("INSERT INTO books VALUES ($title, $series, $number)");
+  var stmt = db.prepare("INSERT INTO books VALUES ($title, $series, $number, $url)");
 
-  stmt.run({$title: "Knights of Sidonia #1", $series: "Knigths of Sidonia", $number: 1});
-  stmt.run({$title: "Knights of Sidonia #2", $series: "Knigths of Sidonia", $number: 2});
+  stmt.run({$title: "Knights of Sidonia #1", $series: "Knigths of Sidonia",
+            $number: 1, $url: "/images/mpv-shot0001.jpg"});
+  stmt.run({$title: "Knights of Sidonia #2", $series: "Knigths of Sidonia",
+            $number: 2, $url: "/images/mpv-shot0002.jpg"});
   stmt.run({$title: "Serenity Rose - Kickstarter edition",
-            $series: "Serenity Rose", $number: 0});
-  stmt.run({$title: "Spice and Wolf #1", $series: "Spice and Wolf", $number: 1});
-  stmt.run({$title: "Spice and Wolf #2", $series: "Spice and Wolf", $number: 2});
+            $series: "Serenity Rose", $number: 0, $url: "/images/mpv-shot0003.jpg"});
+  stmt.run({$title: "Spice and Wolf #1", $series: "Spice and Wolf",
+            $number: 1, $url: "/images/mpv-shot0004.jpg"});
+  stmt.run({$title: "Spice and Wolf #2", $series: "Spice and Wolf",
+            $number: 2, $url: "/images/mpv-shot0005.jpg"});
 
   stmt.finalize();
 });
@@ -21,18 +27,24 @@ db.serialize(function(){
 // app configuration
 var app = express();
 
+app.use(express.static('build'));
+app.use("/images", express.static('images'));
+
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
 
-app.get("/", (req, res) => res.send("Hello World"));
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
 
-app.get("/books", (req, res) => {
+app.get("/api/books", (req, res) => {
   db.all("SELECT * FROM books", (err, data) => {
     res.send(data);
   });
 });
+
 
 app.listen(3500, () => console.log("example app listening on port 3500!"));
