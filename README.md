@@ -54,3 +54,12 @@ Future stuff, I'll build it in my spare time. Contributions are very welcome.
 [ ] swagger
 [ ] add/remove books directly from the interface
 [ ] multiuser (unlikely though)
+
+## Notes for images
+
+ImageMagick is a nice command line tool to modify images
+
+### images are horizontal pointing to the left!
+
+Use `magick mogrify -transpose -flop <images>`
+
