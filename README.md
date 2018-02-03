@@ -11,6 +11,7 @@ To serve it in production, we use nginx as reverse proxy and caching web server.
 
 To deploy the application, an nginx configuration file
 is provided in this project, named `comics.keeper`
+**IMPORTANT**: follow "Database Setup" first! 
 
 1. Rename `comics.keeper` to the name of the (sub)domain set for the website
 2. Modify the nginx configuration to replace every occurrence of `comics.keeper`
@@ -45,9 +46,16 @@ In two different terminals, run
   yarn run start # run create-react-app development server
   ```
 
+## Database Setup
+
+1. Modify the existing `comicskeeper.json` file
+2. run `node ./createdb.js` in the same folder of `comicskeeper.json`
+
+A new file `comicskeeper.db` should be created.
+
 ## Future features / Wishlist
 
-Future stuff, I'll build it in my spare time. Contributions are very welcome. 
+Future stuff I'll build in my spare time. Contributions are very welcome. 
 
 [ ] yeoman generator for nginx configuration
 [ ] improve nginx configuration to handle service workers' websockets
