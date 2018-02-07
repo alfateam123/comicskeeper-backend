@@ -19,8 +19,7 @@ is provided in this project, named `comics.keeper`
 3. Modify the nginx configuration to fix the roots paths to point to the folder
    where you've cloned this project.
 4. Copy `comics.keeper` to `NGINX_ROOT/sites-enabled`
-5. Copy the images of the comics in this folder, under `/images`
-6. Build the frontend
+5. Build the frontend
    ```sh
    # go into the frontend folder
    cd ./comicskeeper-frontend
@@ -31,7 +30,7 @@ is provided in this project, named `comics.keeper`
    # copy the bundle in comicskeeper-backend
    cp -r ./build ../
    ```
-7. Start the backend: `NODE_ENV=production node index.js`
+6. Start the backend: `NODE_ENV=production node index.js`
 
 ## Development
 
@@ -42,14 +41,15 @@ In two different terminals, run
 
 * the frontend
   ```
-  cd ./comicskeeper-frontend
+  cd /path/to/comicskeeper-frontend
   yarn run start # run create-react-app development server
   ```
 
 ## Database Setup
 
 1. Modify the existing `comicskeeper.json` file
-2. run `node ./createdb.js` in the same folder of `comicskeeper.json`
+2. Make sure you have images in "images"
+3. run `node ./createdb.js` in the same folder of `comicskeeper.json`
 
 A new file `comicskeeper.db` should be created.
 
@@ -71,3 +71,11 @@ ImageMagick is a nice command line tool to modify images
 
 Use `magick mogrify -transpose -flop <images>`
 
+### createdb.js is broken! "Stream yields empty buffer"!
+
+`createdb.js` is set to use imagemagick. Please check this
+[stackoverflow question](https://stackoverflow.com/questions/35433249/graphicsmagick-tobuffer-stream-yields-empty-buffer).
+
+In case you don't want to use imagemagick but you're fine with
+graphicsmagick, please change the require("gm") line to remove
+the `.subClass` stuff.
