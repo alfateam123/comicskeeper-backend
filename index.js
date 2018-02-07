@@ -27,14 +27,14 @@ if(!isEnvProduction){
 
 if(isEnvProduction){
   app.get("/api/books", (req, res) => {
-    db.all("SELECT * FROM books", (err, data) => {
+    db.all("SELECT * FROM books ORDER BY series, volume_number", (err, data) => {
       res.send(data);
     });
   });
 }
 else {
   app.get("/api/books", (req, res) => {
-    db.all("SELECT * FROM books", (err, data) => {
+    db.all("SELECT * FROM books ORDER BY series, volume_number", (err, data) => {
       data.forEach(d => d.image = "http://"+LOCALHOST_IP+":"+PORT+d.image);
       res.send(data);
     });
