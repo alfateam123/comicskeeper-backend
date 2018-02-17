@@ -1,7 +1,7 @@
 var sqlite3 = require("sqlite3").verbose();
 var path = require("path");
 var fs = require("fs");
-var gm = require("gm").subClass({imageMagick: true});
+var colorThief = require("color-thief");
 
 function main() {
   fs.unlinkSync("comicskeeper.db");
@@ -18,15 +18,15 @@ function main() {
     doc.forEach(book => {
       var dominantColorPromise = new Promise(function(resolve, reject){
         var imagePath = "images/"+book.image;
-        gm(imagePath)
-          .resize(3, 3)
-          .colors(1)
-          .toBuffer("JPEG", function(error, buffer) {
-            const b64Buffer = buffer.toString('base64');
-            resolve("data:image/jpeg;base64,"+b64Buffer);
-          });
+        fs.readFile(imagePath, function(err, content){
+          let ct = new colorThief();
+          const result = ct.getColor(content);
+          console.log("calculated dominant color for", imagePath);
+          resolve(`rgb(${result[0]},${result[1]},${result[2]})`);
+        });
       });
       dominantColorPromise.then((b64DominantColor) => {
+        console.log("saving data for ", book.series, book.number, " in the database");
         stmt.run({
           $series: book.series,
           $number: book.number,
